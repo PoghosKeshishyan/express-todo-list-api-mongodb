@@ -16,14 +16,13 @@ const login = async (req, res) => {
         const user = await User.findOne({ email });
         const isPasswordCorrect = user && (await user.matchPassword(password));
         const secret = process.env.JWT_SECRET;
-        const token = jwt.sign({ id: user._id }, secret);
 
         if (isPasswordCorrect) {
             res.status(200).json({
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                token: `Bearer ${token}`,
+                token: jwt.sign({ id: user._id }, secret),
             });
         } else {
             res.status(401).json({
